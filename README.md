@@ -103,7 +103,7 @@ If you find this work useful, please cite:
   title     = {Lightweight Real-Time Detection for UAV Wildlife Surveillance: 
                Handling Scale Variation and Computational Efficiency},
   author    = {Shi, Jian and Huang, Xu and Zeng, Mengjia},
-  journal   = {Pattern Analysis and Applications},
+  journal   = {},
   year      = {2025}
 }
 ```
