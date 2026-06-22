@@ -1,115 +1,176 @@
-# StarFlex
-# SF-RTDETR: Lightweight Real-Time Detection for UAV Wildlife Surveillance
+# SF-RTDETR: Lightweight Visual Detection Framework for UAV-Based Wildlife Monitoring
 
-This repository contains the official implementation of **SF-RTDETR**, a lightweight real-time object detection framework for UAV-based aerial wildlife monitoring. SF-RTDETR is built upon the RT-DETR architecture with a redesigned **StarFlex** backbone, integrating Flexible Convolution (FlexConv), Multi-Dilation Convolution (MDConv), and Efficient Channel Attention (ECA) for efficient multi-scale feature modeling.
+This repository provides the implementation details of the manuscript:
 
----
+**Lightweight Visual Detection Framework for UAV-Based Wildlife Monitoring on Qinghai--Tibet Plateau**
 
-## Requirements
+The proposed framework, named **SF-RTDETR**, is built upon RT-DETR and introduces a lightweight **StarFlex backbone** for real-time UAV-based wildlife monitoring. The backbone integrates configurable **FlexConv**, **Multi-Dilation Depthwise Convolution (MDConv)**, and **Efficient Channel Attention (ECA)** to improve multi-scale feature representation while maintaining low computational cost.
 
-Python 3.10.16 is recommended. Install dependencies via:
+## Repository Structure
+
+```text
+model/
+├── README.md
+├── requirements.txt
+├── rtdetr-starflex.yaml
+└── starFlex.py
+```
+
+* `starFlex.py`: implementation of the proposed StarFlex backbone and related modules.
+* `rtdetr-starflex.yaml`: model configuration file used for SF-RTDETR.
+* `requirements.txt`: Python dependencies required for running the implementation.
+* `README.md`: usage instructions and experimental settings.
+
+## Environment Requirements
+
+The experiments in the manuscript were conducted under the following environment:
+
+```text
+Operating system: Linux
+GPU: NVIDIA Tesla V100
+Python: 3.10.16
+PyTorch: 2.3.0
+Input size: 640 × 640
+Batch size: 4
+Training epochs: 100
+Optimizer: AdamW
+Initial learning rate: 1 × 10^-4
+Weight decay: 1 × 10^-4
+```
+
+Install the required packages with:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### requirements.txt
+## Dataset Preparation
 
-```
-# Base
-matplotlib>=3.3.0
-numpy>=1.22.2
-opencv-python>=4.6.0
-pillow>=7.1.2
-pyyaml>=5.3.1
-requests>=2.23.0
-scipy>=1.4.1
-torch>=1.8.0
-torchvision>=0.9.0
-tqdm>=4.64.0
+All datasets used in this study are converted into COCO-style annotation format.
 
-# Logging
-# tensorboard>=2.13.0
+The recommended dataset structure is:
 
-# Plotting
-pandas>=1.1.4
-seaborn>=0.11.0
-
-# Extras
-psutil
-py-cpuinfo
-thop>=0.1.1
+```text
+datasets/
+├── TibetanAntelope/
+│   ├── images/
+│   │   ├── train/
+│   │   ├── val/
+│   │   └── test/
+│   └── annotations/
+│       ├── train.json
+│       ├── val.json
+│       └── test.json
+├── BirdsComputerVision/
+│   ├── images/
+│   └── annotations/
+└── VisDrone2019/
+    ├── images/
+    └── annotations/
 ```
 
----
+The primary Tibetan Antelope Dataset was constructed for UAV-based wildlife monitoring on the Qinghai--Tibet Plateau. The dataset contains 3000 annotated images after data augmentation, including 2400 training images, 300 validation images, and 300 test images.
+
+The additional evaluation datasets include:
+
+* Birds Computer Vision Dataset
+* VisDrone2019 Dataset
+
+The Tibetan Antelope Dataset is available from the authors upon reasonable request. The Birds Computer Vision and VisDrone2019 datasets follow their original data access policies.
 
 ## Training
 
-All experiments were conducted on a Linux system with a Tesla V100 GPU, using PyTorch 2.3.0 and Python 3.10.16. The training settings were kept consistent across all experiments:
+To train SF-RTDETR, place the dataset in the required directory and use the provided configuration file.
 
-| Setting | Value |
-|--------|-------|
-| Optimizer | AdamW |
-| Learning rate | 1e-4 |
-| Weight decay | 1e-4 |
-| Input size | 640 × 640 |
-| Batch size | 4 |
-| Epochs | 200 |
+Example training command:
 
----
-
-## Model
-
-The StarFlex backbone and the full SF-RTDETR model implementation are provided in the `models/` directory:
-
-```
-models/
-├── starflex.py       # StarFlex backbone (FlexConv + MDAB)
-├── sf_rtdetr.py      # Full SF-RTDETR detection framework
+```bash
+python tools/train.py -c rtdetr-starflex.yaml
 ```
 
----
+If your RT-DETR implementation uses a different project structure, copy `starFlex.py` and `rtdetr-starflex.yaml` into the corresponding model and configuration directories, and then run the training script following your local RT-DETR framework.
 
-## Datasets
+The training settings used in the manuscript are:
 
-### 1. Tibetan Antelope Dataset (Primary Wildlife Benchmark)
+```text
+Input size: 640 × 640
+Batch size: 4
+Epochs: 100
+Optimizer: AdamW
+Initial learning rate: 1 × 10^-4
+Weight decay: 1 × 10^-4
+```
 
-This is a self-constructed dataset for UAV-based wildlife detection under complex plateau environments. It contains 3,000 images (2,400 train / 300 val / 300 test) annotated using LabelImg, with data augmentation applied via the Albumentations library (rain, shadow, and haze simulation).
+## Evaluation
 
-The dataset is available upon reasonable request. Please contact the corresponding author at:
+Example evaluation command:
 
-📧 **2024388305@stu.zjhu.edu.cn**
+```bash
+python tools/eval.py -c rtdetr-starflex.yaml -r path/to/checkpoint.pth
+```
 
-### 2. Birds Computer Vision Dataset
+The model is evaluated using the standard COCO evaluation protocol. The main metrics include:
 
-A publicly available aerial bird detection dataset from Roboflow, containing 4,539 annotated images under varying illumination conditions (daytime and nighttime).
+```text
+AP50
+AP50:95
+AP_S
+AP_M
+AP_L
+Params
+GFLOPs
+FPS
+```
 
-🔗 **https://universe.roboflow.com/evilsumrak/birds-wnak6**
+## Main Results
 
-### 3. VisDrone2019 Dataset
+On the Tibetan Antelope Dataset, SF-RTDETR achieves:
 
-A large-scale UAV benchmark dataset containing 10 object categories across diverse urban aerial scenes, with 6,471 training images, 548 validation images, and 1,610 test images.
+```text
+AP50: 93.4%
+AP50:95: 64.7%
+Params: 12.4M
+GFLOPs: 33.6G
+FPS: 81.0
+```
 
-🔗 **https://github.com/VisDrone/VisDrone-Dataset**
+Compared with RT-DETR-R18, SF-RTDETR reduces computational complexity from 56.9 GFLOPs to 33.6 GFLOPs while maintaining competitive detection accuracy and improving inference speed.
 
----
+## Key Modules
+
+### FlexConv
+
+FlexConv is implemented as a configurable convolutional wrapper. By adjusting the kernel size and group number, it can represent different convolution behaviors. In this work, depthwise convolution and pointwise convolution are used as two representative configurations:
+
+```text
+Depthwise Conv: k > 1, g = C_in
+Pointwise Conv: k = 1, g = 1
+```
+
+Depthwise convolution is used for efficient spatial feature extraction, while pointwise convolution is used for channel interaction and feature fusion.
+
+### MDConv
+
+MDConv adopts parallel depthwise convolution branches with different dilation rates to enlarge the effective receptive field and enhance multi-scale spatial feature modeling.
+
+### ECA
+
+Efficient Channel Attention is used to recalibrate channel-wise responses with low computational overhead.
 
 ## Citation
 
-If you find this work useful, please cite:
+If you use this code or find this work helpful, please cite the following manuscript:
 
 ```bibtex
-@article{shi2025sfrtdetr,
-  title     = {Lightweight Real-Time Detection for UAV Wildlife Surveillance: 
-               Handling Scale Variation and Computational Efficiency},
-  author    = {Shi, Jian and Huang, Xu and Zeng, Mengjia},
-  journal   = {},
-  year      = {2025}
+@article{shi2026sfrtdetr,
+  title={Lightweight Visual Detection Framework for UAV-Based Wildlife Monitoring on Qinghai--Tibet Plateau},
+  author={Shi, Jian and Huang, Xu and Zeng, Mengjia},
+  journal={The Visual Computer},
+  year={2026},
+  note={Manuscript submitted}
 }
 ```
 
----
+## Note
 
-## License
-
-This project is released for academic research purposes only.
+This repository is directly related to the manuscript submitted to *The Visual Computer*. Please cite the corresponding manuscript if you use this code, configuration, or implementation details in your research.
