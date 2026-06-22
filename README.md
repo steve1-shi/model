@@ -165,7 +165,7 @@ If you use this code or find this work helpful, please cite the following manusc
 @article{shi2026sfrtdetr,
   title={Lightweight Visual Detection Framework for UAV-Based Wildlife Monitoring on Qinghai--Tibet Plateau},
   author={Shi, Jian and Huang, Xu and Zeng, Mengjia},
-  journal={The Visual Computer},
+  journal={},
   year={2026},
   note={Manuscript submitted}
 }
