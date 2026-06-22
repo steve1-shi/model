@@ -6,8 +6,6 @@ from prettytable import PrettyTable
 from ultralytics import RTDETR
 from ultralytics.utils.torch_utils import model_info
 
-# 精度小数点保留位数修改问题可看<使用说明.md>下方的<YOLOV8源码常见疑问解答小课堂>第五点
-# 最终论文的参数量和计算量统一以这个脚本运行出来的为准
 
 def get_weight_size(path):
     stats = os.stat(path)
@@ -15,12 +13,12 @@ def get_weight_size(path):
 
 if __name__ == '__main__':
     model_path = 'F:/Dpan/RTDETR622new/paper2/val/sheepr34.pt'
-    model = RTDETR(model_path) # 选择训练好的权重路径
+    model = RTDETR(model_path) 
     result = model.val(data='F:/Dpan/RTDETR622new/dataset/data.yaml',
-                      split='test', # split可以选择train、val、test 根据自己的数据集情况来选择.
+                      split='test', 
                       imgsz=640,
                       batch=4,
-                      save_json=True, # if you need to cal coco metrice
+                      save_json=True, 
                       project='runs/val',
                       name='paper2(r34)',
                       )
