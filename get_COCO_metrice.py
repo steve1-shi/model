@@ -6,8 +6,8 @@ from tidecv import TIDE, datasets
 
 def parse_opt():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--anno_json', type=str, default='dataset/sheepAUG.json', help='training model path')
-    parser.add_argument('--pred_json', type=str, default='runs/val/paper2(r34)2/predictions.json', help='data yaml path')
+    parser.add_argument('--anno_json', type=str, default='dataset/u.json', help='training model path')
+    parser.add_argument('--pred_json', type=str, default='runs/val/u.json', help='data yaml path')
     
     return parser.parse_known_args()[0]
 
