@@ -52,8 +52,8 @@ model/
 ├── yolo2coco.py
 └── samples/
 ```
-README.md: usage instructions, environment settings, dataset preparation, training procedure, validation/testing procedure, COCO-style metric calculation, data availability statement, and reproducibility information.
-requirements.txt: Python dependencies required for running the code.
+* `README.md`: usage instructions, environment settings, dataset preparation, training procedure, validation/testing procedure, COCO-style metric calculation, data availability statement, and reproducibility information.
+* `requirements.txt`: Python dependencies required for running the code.
 rtdetr-starflex.yaml: model configuration file of SF-RTDETR.
 starFlex.py: implementation of the StarFlex backbone and its related modules used by rtdetr-starflex.yaml.
 train.py: training script based on the Ultralytics RT-DETR framework.
