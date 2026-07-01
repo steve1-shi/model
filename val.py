@@ -12,15 +12,15 @@ def get_weight_size(path):
     return f'{stats.st_size / 1024 / 1024:.1f}'
 
 if __name__ == '__main__':
-    model_path = 'F:/Dpan/RTDETR622new/paper2/val/sheepr34.pt'
+    model_path = 'F:/'
     model = RTDETR(model_path) 
-    result = model.val(data='F:/Dpan/RTDETR622new/dataset/data.yaml',
+    result = model.val(data='F:/',
                       split='test', 
                       imgsz=640,
                       batch=4,
                       save_json=True, 
                       project='runs/val',
-                      name='paper2(r34)',
+                      name='as u like',
                       )
     
     if model.task == 'detect': # 仅目标检测任务适用
