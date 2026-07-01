@@ -10,7 +10,7 @@ if __name__ == '__main__':
     model = RTDETR('ultralytics/cfg/models/rt-detr/rtdetr-r18.yaml')
   
     
-    model.train(data='F:/Dpan/RTDETR622new/dataset/Finaldata.yaml',
+    model.train(data='F:/.....yaml',
                 cache=True,
                 imgsz=640,
                 epochs=100,
