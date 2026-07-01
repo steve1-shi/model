@@ -1,10 +1,42 @@
 # SF-RTDETR: Lightweight Visual Detection Framework for UAV-Based Wildlife Monitoring
 
-This repository provides the implementation details of the manuscript:
+This repository provides the official implementation of the manuscript:
 
-**Lightweight Visual Detection Framework for UAV-Based Wildlife Monitoring on Qinghai--Tibet Plateau**
+**SF-RTDETR: A Lightweight Real-Time Visual Detection Framework for UAV-Based Wildlife Monitoring**
 
-The proposed framework, named **SF-RTDETR**, is built upon RT-DETR and introduces a lightweight **StarFlex backbone** for real-time UAV-based wildlife monitoring. The backbone integrates configurable **FlexConv**, **Multi-Dilation Depthwise Convolution (MDConv)**, and **Efficient Channel Attention (ECA)** to improve multi-scale feature representation while maintaining low computational cost.
+The proposed framework, named **SF-RTDETR**, is built upon the Ultralytics implementation of RT-DETR. It introduces a lightweight **StarFlex backbone** for real-time UAV-based wildlife monitoring. The StarFlex backbone integrates configurable **FlexConv**, **Multi-Dilation Depthwise Convolution (MDConv)**, and **Efficient Channel Attention (ECA)** to improve multi-scale feature representation while maintaining low computational cost.
+
+---
+
+## Environment Setup
+
+The code was developed and tested under the following environment:
+
+```text
+Operating system: Linux
+GPU: NVIDIA Tesla V100
+Python: 3.10.16
+PyTorch: 2.3.0
+Ultralytics RT-DETR
+Input size: 640 × 640
+Batch size: 4
+Training epochs: 100
+Optimizer: AdamW
+Initial learning rate: 1 × 10^-4
+Weight decay: 1 × 10^-4
+Random seed: 0
+Deterministic mode: True
+Automatic Mixed Precision: False
+Pretrained weights: False
+```
+
+Install the required dependencies with:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
 
 ## Repository Structure
 
@@ -13,40 +45,39 @@ model/
 ├── README.md
 ├── requirements.txt
 ├── rtdetr-starflex.yaml
-└── starFlex.py
+├── starFlex.py
+├── train.py
+├── val.py
+└── get_COCO_metrice.py
 ```
 
-* `starFlex.py`: implementation of the proposed StarFlex backbone and related modules.
-* `rtdetr-starflex.yaml`: model configuration file used for SF-RTDETR.
-* `requirements.txt`: Python dependencies required for running the implementation.
-* `README.md`: usage instructions and experimental settings.
+* `rtdetr-starflex.yaml`: model configuration file of SF-RTDETR.
+* `starFlex.py`: implementation of the StarFlex backbone and its related modules.
+* `train.py`: training script based on the Ultralytics RT-DETR framework.
+* `val.py`: validation/testing script used to obtain model performance, parameter number, GFLOPs, FPS, and prediction JSON files.
+* `get_COCO_metrice.py`: script used to calculate COCO-style AP metrics based on annotation JSON and prediction JSON files.
+* `requirements.txt`: Python dependencies required for running the code.
 
-## Environment Requirements
+The file `rtdetr-starflex.yaml` defines the SF-RTDETR model architecture and uses the modules implemented in `starFlex.py`.
 
-The experiments in the manuscript were conducted under the following environment:
+Additional reproducibility resources may also be included to improve transparency:
 
 ```text
-Operating system: Linux
-GPU: NVIDIA Tesla V100
-Python: 3.10.16
-PyTorch: 2.3.0
-Input size: 640 × 640
-Batch size: 4
-Training epochs: 100
-Optimizer: AdamW
-Initial learning rate: 1 × 10^-4
-Weight decay: 1 × 10^-4
+model/
+├── samples/
+│   ├── images/
+│   └── labels/
+└── data.yaml
 ```
 
-Install the required packages with:
+* `samples/`: a small representative subset of the Tibetan Antelope Dataset used to illustrate the image format, annotation format, and dataset organization.
+* `data.yaml`: an example dataset configuration file showing the dataset path and label information.
 
-```bash
-pip install -r requirements.txt
-```
+---
 
 ## Dataset Preparation
 
-All datasets used in this study are converted into COCO-style annotation format.
+The models are trained using the YOLO-style annotation format supported by the Ultralytics framework.
 
 The recommended dataset structure is:
 
@@ -57,40 +88,88 @@ datasets/
 │   │   ├── train/
 │   │   ├── val/
 │   │   └── test/
-│   └── annotations/
-│       ├── train.json
-│       ├── val.json
-│       └── test.json
+│   ├── labels/
+│   │   ├── train/
+│   │   ├── val/
+│   │   └── test/
+│   └── data.yaml
 ├── BirdsComputerVision/
 │   ├── images/
-│   └── annotations/
+│   ├── labels/
+│   └── data.yaml
 └── VisDrone2019/
     ├── images/
-    └── annotations/
+    ├── labels/
+    └── data.yaml
 ```
+
+The dataset YAML file should follow the standard Ultralytics format, including the training, validation, and test image paths, the number of classes, and the class names.
+
+Although the training scripts use the YOLO-style annotation format required by the Ultralytics framework, all datasets share the same image samples, category definitions, bounding-box annotations, and train/validation/test splits used in the experiments. For COCO-style AP evaluation, the corresponding annotations and prediction results are converted into JSON format and evaluated using `get_COCO_metrice.py`. Therefore, the use of YOLO-style files is only a framework-specific input format and does not change the dataset content or the final COCO-style evaluation protocol.
+
+---
+
+### Tibetan Antelope Dataset
 
 The primary Tibetan Antelope Dataset was constructed for UAV-based wildlife monitoring on the Qinghai--Tibet Plateau. The dataset contains 3000 annotated images after data augmentation, including 2400 training images, 300 validation images, and 300 test images.
 
-The additional evaluation datasets include:
+The full Tibetan Antelope Dataset is not publicly redistributed in this repository due to data source-use and redistribution restrictions. To support transparency and format verification, we provide a small representative subset in the `samples/` folder, where possible. The sample subset is used only to illustrate the image format, annotation format, and dataset organization.
 
-* Birds Computer Vision Dataset
-* VisDrone2019 Dataset
+For academic and non-commercial research purposes, requests for access to the full Tibetan Antelope Dataset can be sent to:
 
-The Tibetan Antelope Dataset is available from the authors upon reasonable request. The Birds Computer Vision and VisDrone2019 datasets follow their original data access policies.
+```text
+2024388305@stu.zjhu.edu.cn
+```
+
+Access will be considered subject to relevant data-use restrictions and reasonable research purposes.
+
+---
+
+### Birds Computer Vision Dataset
+
+The Birds Computer Vision Dataset used in this study is an open-source dataset from Roboflow Universe:
+
+```text
+https://universe.roboflow.com/evilsumrak/birds-wnak6
+```
+
+Users should download and use this dataset according to the original Roboflow Universe access policy and citation requirements.
+
+---
+
+### VisDrone2019 Dataset
+
+The VisDrone2019 dataset used in this study is available from the official VisDrone repository:
+
+```text
+https://github.com/VisDrone/VisDrone-Dataset
+```
+
+In this work, we use **Task 1: Object Detection in Images** for evaluation. Users should download and use the dataset according to the official VisDrone data access policy and citation requirements.
+
+---
 
 ## Training
 
-To train SF-RTDETR, place the dataset in the required directory and use the provided configuration file.
-
-Example training command:
+Train SF-RTDETR with:
 
 ```bash
-python tools/train.py -c rtdetr-starflex.yaml
+python train.py
 ```
 
-If your RT-DETR implementation uses a different project structure, copy `starFlex.py` and `rtdetr-starflex.yaml` into the corresponding model and configuration directories, and then run the training script following your local RT-DETR framework.
+Before training, modify the dataset path in `train.py` according to your local environment:
 
-The training settings used in the manuscript are:
+```python
+data='path/to/dataset.yaml'
+```
+
+The model configuration used for SF-RTDETR is:
+
+```python
+model = RTDETR('rtdetr-starflex.yaml')
+```
+
+The main training settings used in the paper are:
 
 ```text
 Input size: 640 × 640
@@ -99,17 +178,75 @@ Epochs: 100
 Optimizer: AdamW
 Initial learning rate: 1 × 10^-4
 Weight decay: 1 × 10^-4
+Random seed: 0
+Deterministic mode: True
+AMP: False
+Pretrained weights: False
 ```
 
-## Evaluation
+During training, the best checkpoint is automatically saved by Ultralytics according to validation performance:
 
-Example evaluation command:
+```text
+runs/train/[experiment_name]/weights/best.pt
+```
+
+---
+
+## Validation and Testing
+
+Evaluate the trained model with:
 
 ```bash
-python tools/eval.py -c rtdetr-starflex.yaml -r path/to/checkpoint.pth
+python val.py
 ```
 
-The model is evaluated using the standard COCO evaluation protocol. The main metrics include:
+Before running the script, modify the following paths in `val.py`:
+
+```python
+model_path = 'runs/train/[experiment_name]/weights/best.pt'
+data = 'path/to/dataset.yaml'
+```
+
+The validation/testing script reports model complexity, inference speed, and detection performance, including:
+
+```text
+GFLOPs
+Parameters
+Preprocessing time
+Inference time
+Postprocessing time
+FPS
+Precision
+Recall
+F1-score
+mAP50
+mAP75
+mAP50:95
+```
+
+The results are saved to:
+
+```text
+runs/val/[experiment_name]/paper_data.txt
+```
+
+When `save_json=True`, the prediction results are also saved as JSON files for COCO-style metric calculation.
+
+---
+
+## COCO-style Metric Calculation
+
+Calculate COCO-style AP metrics with:
+
+```bash
+python get_COCO_metrice.py \
+  --anno_json path/to/annotation.json \
+  --pred_json path/to/predictions.json
+```
+
+The script uses `pycocotools` to calculate standard COCO detection metrics and `tidecv` for additional error analysis.
+
+The main COCO-style metrics include:
 
 ```text
 AP50
@@ -117,12 +254,38 @@ AP50:95
 AP_S
 AP_M
 AP_L
-Params
-GFLOPs
-FPS
 ```
 
-## Main Results
+---
+
+## Reproducing the Main Results
+
+To reproduce the main results reported in the paper:
+
+1. Prepare the dataset in YOLO-style format.
+2. Modify the dataset path in `train.py`.
+3. Run:
+
+```bash
+python train.py
+```
+
+4. Modify the checkpoint path and dataset path in `val.py`.
+5. Run:
+
+```bash
+python val.py
+```
+
+6. Use the generated prediction JSON and the corresponding annotation JSON to calculate COCO-style AP metrics:
+
+```bash
+python get_COCO_metrice.py \
+  --anno_json path/to/annotation.json \
+  --pred_json path/to/predictions.json
+```
+
+The final results reported in the paper are obtained using the validation-selected `best.pt` checkpoint and evaluating it on the test set.
 
 On the Tibetan Antelope Dataset, SF-RTDETR achieves:
 
@@ -134,7 +297,19 @@ GFLOPs: 33.6G
 FPS: 81.0
 ```
 
-Compared with RT-DETR-R18, SF-RTDETR reduces computational complexity from 56.9 GFLOPs to 33.6 GFLOPs while maintaining competitive detection accuracy and improving inference speed.
+---
+
+## Checkpoints
+
+The reported results are obtained using the `best.pt` checkpoint selected according to validation performance. This repository encourages full end-to-end reproduction by training the model from scratch using the provided code, configuration file, random seed, and training settings.
+
+If checkpoint-based verification is required for academic purposes, readers may contact the author by email:
+
+```text
+2024388305@stu.zjhu.edu.cn
+```
+
+---
 
 ## Key Modules
 
@@ -157,20 +332,54 @@ MDConv adopts parallel depthwise convolution branches with different dilation ra
 
 Efficient Channel Attention is used to recalibrate channel-wise responses with low computational overhead.
 
+---
+
+## Requirements
+
+The main dependencies include:
+
+```text
+ultralytics
+torch==2.3.0
+torchvision
+numpy
+opencv-python
+pillow
+pyyaml
+requests
+scipy
+tqdm
+matplotlib
+pandas
+seaborn
+prettytable
+pycocotools
+tidecv
+thop
+psutil
+py-cpuinfo
+```
+
+Please install all dependencies using:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
 ## Citation
 
 If you use this code or find this work helpful, please cite the following manuscript:
 
 ```bibtex
 @article{shi2026sfrtdetr,
-  title={Lightweight Visual Detection Framework for UAV-Based Wildlife Monitoring on Qinghai--Tibet Plateau},
+  title={SF-RTDETR: A Lightweight Real-Time Visual Detection Framework for UAV-Based Wildlife Monitoring},
   author={Shi, Jian and Huang, Xu and Zeng, Mengjia},
   journal={},
   year={2026},
-  note={Manuscript submitted}
+  note={}
 }
 ```
 
-## Note
-
-This repository is directly related to the manuscript submitted to *The Visual Computer*. Please cite the corresponding manuscript if you use this code, configuration, or implementation details in your research.
+##
