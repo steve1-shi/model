@@ -39,7 +39,6 @@ pip install -r requirements.txt
 ---
 
 ## Repository Structure
-
 ```text
 model/
 ├── README.md
@@ -48,17 +47,23 @@ model/
 ├── starFlex.py
 ├── train.py
 ├── val.py
-└── get_COCO_metrice.py
+├── get_COCO_metrice.py
+├── split_data.py
+├── yolo2coco.py
+└── samples/
 ```
+README.md: usage instructions, environment settings, dataset preparation, training procedure, validation/testing procedure, COCO-style metric calculation, data availability statement, and reproducibility information.
+requirements.txt: Python dependencies required for running the code.
+rtdetr-starflex.yaml: model configuration file of SF-RTDETR.
+starFlex.py: implementation of the StarFlex backbone and its related modules used by rtdetr-starflex.yaml.
+train.py: training script based on the Ultralytics RT-DETR framework.
+val.py: validation/testing script used to obtain model performance, parameter number, GFLOPs, FPS, and prediction JSON files.
+get_COCO_metrice.py: script used to calculate COCO-style AP metrics based on annotation JSON and prediction JSON files.
+split_data.py: auxiliary script used to illustrate the train/validation/test data splitting process.
+yolo2coco.py: auxiliary script used to convert YOLO-style annotations into COCO-style JSON files for COCO-style metric calculation.
+samples/: a small representative subset of the Tibetan Antelope Dataset used to illustrate the image format, annotation format, and dataset organization.
 
-* `rtdetr-starflex.yaml`: model configuration file of SF-RTDETR.
-* `starFlex.py`: implementation of the StarFlex backbone and its related modules.
-* `train.py`: training script based on the Ultralytics RT-DETR framework.
-* `val.py`: validation/testing script used to obtain model performance, parameter number, GFLOPs, FPS, and prediction JSON files.
-* `get_COCO_metrice.py`: script used to calculate COCO-style AP metrics based on annotation JSON and prediction JSON files.
-* `requirements.txt`: Python dependencies required for running the code.
-
-The file `rtdetr-starflex.yaml` defines the SF-RTDETR model architecture and uses the modules implemented in `starFlex.py`.
+The file rtdetr-starflex.yaml defines the SF-RTDETR model architecture and uses the modules implemented in starFlex.py.
 
 Additional reproducibility resources may also be included to improve transparency:
 
