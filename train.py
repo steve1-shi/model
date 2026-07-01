@@ -19,6 +19,6 @@ if __name__ == '__main__':
                 # device='0,1',  
                 # resume='', 
                 project='runs/train',
-                name='starnet-og',
+                name='u',
                 )
     
